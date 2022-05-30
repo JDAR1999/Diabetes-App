@@ -18,6 +18,13 @@ from sklearn import linear_model
 ys = np.genfromtxt(fname='ys.csv', delimiter=',')
 ts = np.genfromtxt(fname='ts.csv', delimiter=',')
 
+#ts=[0]
+#x=0
+#for i in range(0,len(ys)+1):
+    #x+=15
+    #ts = np.append(ts,x)
+
+
 
 # In[8]:
 
@@ -44,7 +51,7 @@ yp_pred = np.zeros(n_s-1)
 
 # Real time data acquisition is here simulated and a prediction of ph minutes forward is estimated.
 # At every iteration of the for cycle a new sample from CGM is acquired.
-for i in range(2, n_s+1):
+for i in range(2, (n_s+1)):
     ts_tmp = ts[0:i]
     ys_tmp = ys[0:i]
     ns = len(ys_tmp)
@@ -82,6 +89,10 @@ for i in range(2, n_s+1):
 t_tot = [l for l in range(int(ts.min()), int(tp_pred.max())+1)]
 hypo = 70*np.ones(len(t_tot)) 
     
+# Condition to make alarm
+#if ys.iloc[:,0]==hypo:
+#    print("Watch out at "+ ts.iloc[:,0] + "you could have an hypoglicemic attack" )
+
 fig, ax = plt.subplots()
 fig.suptitle('Glucose prediction', fontsize=14, fontweight='bold')
 ax.set_title('mu = %g, ph=%g ' %(mu, ph))
