@@ -43,8 +43,8 @@ ts = pd.DataFrame(ts)
 # Parameters of the predictive model. ph is Prediction horizon, mu is Forgetting factor.
 ph = 30  
 mu = 0.9  
-hypo = 70  # you should ask the user by input
-hyper = 180
+hypo = float(input("Set your hypoglycemia threshold"))
+hyper = float(input("Set your hyperglycemia threshold"))
 n_s = len(ys)
 
 
