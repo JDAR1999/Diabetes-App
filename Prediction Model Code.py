@@ -43,7 +43,9 @@ ts = pd.DataFrame(ts)
 # Parameters of the predictive model. ph is Prediction horizon, mu is Forgetting factor.
 ph = 30  
 mu = 0.9  
+hypo = 70
 n_s = len(ys)
+
 
 # Arrays that will contain predicted values.
 tp_pred = np.zeros(n_s-1) 
@@ -79,26 +81,27 @@ for i in range(2, (n_s+1)):
       
     tp_pred[i-2] = tp    
     yp_pred[i-2] = yp
+    #if yp == hypo:
+        #print("Watch out you could have an hypoglicemic attack" )
+
 
 
 # In[10]:
 
 
-#%% PLOT
+#%% THRESHOLD
 # Hypoglycemia threshold vector.    
 t_tot = [l for l in range(int(ts.min()), int(tp_pred.max())+1)]
-hypo = 70*np.ones(len(t_tot)) 
+hypoline = hypo*np.ones(len(t_tot)) 
     
 # Condition to make alarm
-#if ys.iloc[:,0]==hypo:
-#    print("Watch out at "+ ts.iloc[:,0] + "you could have an hypoglicemic attack" )
 
 fig, ax = plt.subplots()
 fig.suptitle('Glucose prediction', fontsize=14, fontweight='bold')
 ax.set_title('mu = %g, ph=%g ' %(mu, ph))
 ax.plot(tp_pred, yp_pred, '--', label='Prediction') 
 ax.plot(ts.iloc[:,0], ys.iloc[:,0], label='CGM data') 
-ax.plot(t_tot, hypo, label='Hypoglycemia threshold')
+ax.plot(t_tot, hypoline, label='Hypoglycemia threshold')
 ax.set_xlabel('time (min)')
 ax.set_ylabel('glucose (mg/dl)')
 ax.legend()
