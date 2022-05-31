@@ -81,8 +81,8 @@ for i in range(2, (n_s+1)):
       
     tp_pred[i-2] = tp    
     yp_pred[i-2] = yp
-    #if yp == hypo:
-        #print("Watch out you could have an hypoglicemic attack" )
+    if yp <= hypo:
+        print("Watch out at " + str(tp) + " you could have an hypoglicemic attack")
 
 
 
