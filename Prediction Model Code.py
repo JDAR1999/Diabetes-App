@@ -43,7 +43,8 @@ ts = pd.DataFrame(ts)
 # Parameters of the predictive model. ph is Prediction horizon, mu is Forgetting factor.
 ph = 30  
 mu = 0.9  
-hypo = 70
+hypo = 70  # you should ask the user by input
+hyper = 180
 n_s = len(ys)
 
 
@@ -81,9 +82,12 @@ for i in range(2, (n_s+1)):
       
     tp_pred[i-2] = tp    
     yp_pred[i-2] = yp
-    if yp <= hypo:
-        print("Watch out at " + str(tp) + " you could have an hypoglicemic attack")
 
+    # Condition to make alarm
+    if yp <= hypo:
+        print("Watch out at " + str(tp) + " you could have hypoglicemic")
+    if yp >= hyper:
+        print("Watch out at " + str(tp) + " you could have hyperglicemic")
 
 
 # In[10]:
@@ -93,15 +97,16 @@ for i in range(2, (n_s+1)):
 # Hypoglycemia threshold vector.    
 t_tot = [l for l in range(int(ts.min()), int(tp_pred.max())+1)]
 hypoline = hypo*np.ones(len(t_tot)) 
+hyperline = hyper*np.ones(len(t_tot)) 
     
-# Condition to make alarm
-
+#PLOTING
 fig, ax = plt.subplots()
 fig.suptitle('Glucose prediction', fontsize=14, fontweight='bold')
 ax.set_title('mu = %g, ph=%g ' %(mu, ph))
 ax.plot(tp_pred, yp_pred, '--', label='Prediction') 
 ax.plot(ts.iloc[:,0], ys.iloc[:,0], label='CGM data') 
 ax.plot(t_tot, hypoline, label='Hypoglycemia threshold')
+ax.plot(t_tot, hyperline, label='Hyperglycemia threshold')
 ax.set_xlabel('time (min)')
 ax.set_ylabel('glucose (mg/dl)')
 ax.legend()
