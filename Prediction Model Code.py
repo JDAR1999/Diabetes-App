@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn import linear_model
+from playsound import playsound
 
 
 # In[4]:
@@ -24,17 +25,9 @@ ts = np.genfromtxt(fname='ts.csv', delimiter=',')
     #x+=15
     #ts = np.append(ts,x)
 
-
-
-# In[8]:
-
-
 # Convert numpy array to pandas DataFrame.
 ys = pd.DataFrame(ys)
 ts = pd.DataFrame(ts)
-
-
-# In[9]:
 
 
 #%% MODEL FIT AND PREDICTION
@@ -43,10 +36,11 @@ ts = pd.DataFrame(ts)
 # Parameters of the predictive model. ph is Prediction horizon, mu is Forgetting factor.
 ph = 30  
 mu = 0.9  
-hypo = float(input("Set your hypoglycemia threshold"))
-hyper = float(input("Set your hyperglycemia threshold"))
+hypo = 70
+hyper = 160
+#hypo = float(input("Set your hypoglycemia threshold"))
+#hyper = float(input("Set your hyperglycemia threshold"))
 n_s = len(ys)
-
 
 # Arrays that will contain predicted values.
 tp_pred = np.zeros(n_s-1) 
@@ -71,7 +65,7 @@ for i in range(2, (n_s+1)):
     # MODEL
     # Perform an Ordinary least squares Linear Regression.
     lm_tmp = linear_model.LinearRegression()    
-    model_tmp = lm_tmp.fit(ts_tmp, ys_tmp, sample_weight=weights)
+    model_tmp = lm_tmp.fit(ts_tmp, ys_tmp, weights)
     # Coefficients of the linear model, y = mx + q 
     m_tmp = model_tmp.coef_
     q_tmp = model_tmp.intercept_
@@ -84,13 +78,29 @@ for i in range(2, (n_s+1)):
     yp_pred[i-2] = yp
 
     # Condition to make alarm
+    if hyper > yp and yp > hypo:
+        counter = 0
+    
     if yp <= hypo:
-        print("Watch out at " + str(tp) + " you could have hypoglicemic")
+        counter += 1
+        if counter == 10:
+            print("Watch out you could have hypoglicemic episode")
+            playsound('alarm2.mp3')
+        elif counter == 15:
+            print("Watch out! We have predicted " + str(counter)  + " values in a row below the established threshold")
+            #playsound('alarm2.mp3')
+        elif counter == 30:
+           print("Watch out! We have predicted " + str(counter) + " values in a row below the established threshold")
+           #playsound('alarm2.mp3')
+        elif counter == 45:
+            print("Watch out! We have predicted " + str(counter) + " values in a row below the established threshold")
+            #playsound('alarm2.mp3')
+        elif counter == 60:
+            print("Watch out! We have predicted " + str(counter) + " values in a row below the established threshold")
+            #playsound('alarm2.mp3')
+
     if yp >= hyper:
-        print("Watch out at " + str(tp) + " you could have hyperglicemic")
-
-
-# In[10]:
+        print("Watch out at you could have hyperglicemic")
 
 
 #%% THRESHOLD
@@ -112,9 +122,4 @@ ax.set_ylabel('glucose (mg/dl)')
 ax.legend()
       
 
-
-# In[ ]:
-
-
-
-
+# %%
